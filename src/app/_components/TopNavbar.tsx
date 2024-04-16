@@ -7,8 +7,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { getProjects } from "~/server/db";
 
-export default function TopNavbar() {
+const selectProjects = async () => {
+  "use server";
+  const projects = await getProjects();
+  return projects;
+};
+
+export default async function TopNavbar() {
+  const projects = await selectProjects();
+
   return (
     <nav className="flex items-center justify-between border-b bg-secondary p-5 text-primary">
       <div className="flex items-center gap-5">
@@ -21,9 +30,14 @@ export default function TopNavbar() {
             <SelectValue placeholder="Select project" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="1">Project #1</SelectItem>
-            <SelectItem value="2">Project #2</SelectItem>
-            <SelectItem value="3">Project #3</SelectItem>
+            {projects.map((project) => (
+              <SelectItem
+                key={project.id}
+                value={project.id as unknown as string}
+              >
+                {project.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
