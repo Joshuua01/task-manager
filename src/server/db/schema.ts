@@ -3,17 +3,14 @@
 
 import {
   index,
+  pgEnum,
   pgTableCreator,
   serial,
   varchar,
 } from "drizzle-orm/pg-core";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
+export const roleEnum = pgEnum('role', ['admin', 'developer', 'devops']);
+
 export const createTable = pgTableCreator((name) => `task-manager_${name}`);
 
 export const posts = createTable(
@@ -26,4 +23,16 @@ export const posts = createTable(
   (projects) => ({
     nameIndex: index("name_idx").on(projects.name),
   })
+);
+
+export const users = createTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 256 }).notNull(),
+    surname: varchar("surname", { length: 256 }).notNull(),
+    login: varchar("email", { length: 256 }).notNull(),
+    password: varchar("password", { length: 256 }).notNull(),
+    role: roleEnum("role").notNull(),
+  }
 );
