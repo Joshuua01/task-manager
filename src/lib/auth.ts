@@ -6,7 +6,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { type EncryptedUser } from "~/app/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const secret = process.env.JWT_SECRET;
 const key = new TextEncoder().encode(secret);
