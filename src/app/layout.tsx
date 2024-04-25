@@ -1,7 +1,8 @@
 import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
-import TopNavbar from "./_components/TopNavbar";
+import TopNavbar from "~/components/Navbar/TopNavbar";
+import { ThemeProvider } from "~/lib/themeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,12 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${inter.variable}`}>
-        <div className="grid h-screen grid-rows-[auto_1fr]">
-          <TopNavbar />
-          <div className="flex h-full flex-col">{children}</div>
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="grid h-screen grid-rows-[auto_1fr]">
+            <TopNavbar />
+            <div className="flex h-full flex-col bg-background">{children}</div>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
