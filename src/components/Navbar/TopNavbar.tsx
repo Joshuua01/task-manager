@@ -26,8 +26,8 @@ export default async function TopNavbar() {
             <ProfileDropdown user={user} />
           </>
         ) : (
-          <Button variant="outline">
-            <Link href="/auth/login">Login</Link>
+          <Button>
+            <Link href="/auth/login">Sign in</Link>
           </Button>
         )}
       </div>
