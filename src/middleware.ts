@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { getUserFromToken, refreshToken } from "./lib/auth";
+import { getUserFromToken, refreshToken } from "./lib/actions";
 
 export async function middleware(request: NextRequest) {
   if ((await getUserFromToken()) === null) {

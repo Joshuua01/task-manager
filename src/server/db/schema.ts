@@ -13,12 +13,12 @@ export const roleEnum = pgEnum("role", ["admin", "developer", "devops"]);
 
 export const createTable = pgTableCreator((name) => `task-manager_${name}`);
 
-export const posts = createTable(
+export const projects = createTable(
   "projects",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }).notNull(),
-    desc: varchar("desc", { length: 256 }).notNull(),
+    name: varchar("name", { length: 256 }).notNull().unique(),
+    description: varchar("description", { length: 256 }).notNull(),
   },
   (projects) => ({
     nameIndex: index("name_idx").on(projects.name),

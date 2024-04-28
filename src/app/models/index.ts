@@ -1,7 +1,7 @@
 export type Project = {
   id: number;
   name: string;
-  desc: string;
+  description: string;
 };
 
 export type EncryptedUser = {

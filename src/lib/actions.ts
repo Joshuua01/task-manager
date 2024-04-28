@@ -1,11 +1,11 @@
 "use server";
-import { getUserByLogin } from "~/server/db";
+import { addProject, getProjects, getUserByLogin } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type EncryptedUser } from "~/app/models";
+import { type Project, type EncryptedUser } from "~/app/models";
 import { NextResponse } from "next/server";
 
 const secret = process.env.JWT_SECRET;
@@ -95,4 +95,21 @@ export const getUserFromToken = async () => {
 
 export async function saveCookie(name: string, value: string) {
   cookies().set(name, value);
+}
+
+export async function getActiveProject() {
+  const activeProjectId = cookies().get("activeProject")?.value;
+  if (!activeProjectId) return null;
+  return activeProjectId.toString();
+}
+
+export async function createProject(project: Project) {
+  const projects = await getProjects();
+  if (projects.some((p) => p.name === project.name)) {
+    return {
+      error: "Project with this name already exists",
+    };
+  }
+  await addProject(project);
+  return;
 }

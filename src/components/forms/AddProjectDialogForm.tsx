@@ -1,9 +1,9 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { LoginSchema } from "~/lib/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { type z } from "zod";
+import { CreateProjectSchema } from "~/lib/formSchema";
 import {
   Form,
   FormControl,
@@ -11,23 +11,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { login } from "~/lib/auth";
+} from "../ui/form";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { createProject } from "~/lib/actions";
+import { type Project } from "~/app/models";
 
-export default function LoginForm() {
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+export default function AddProjectDialogForm() {
+  const form = useForm<z.infer<typeof CreateProjectSchema>>({
+    resolver: zodResolver(CreateProjectSchema),
     defaultValues: {
-      login: "",
-      password: "",
+      name: "",
+      description: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof LoginSchema>) {
-    const result = await login(data);
-    console.log(result);
+  async function onSubmit(data: z.infer<typeof CreateProjectSchema>) {
+    const result = await createProject(data as Project);
     if (result?.error) {
       form.setError("root", {
         type: "custom",
@@ -39,15 +39,15 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-1/3 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="login"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Login</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your login..." {...field} />
+                <Input placeholder="Enter your name..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -55,23 +55,19 @@ export default function LoginForm() {
         />
         <FormField
           control={form.control}
-          name="password"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Enter your password..."
-                  {...field}
-                />
+                <Input placeholder="Enter your description..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" className="w-full">
-          Login
+          Add project
         </Button>
         {form.formState.errors.root && (
           <p className="w-full text-center font-semibold text-destructive">

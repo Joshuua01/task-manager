@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { getUserFromToken } from "~/lib/auth";
+import { getActiveProject, getUserFromToken } from "~/lib/actions";
 import { getProjects } from "~/server/db";
 import { ThemeToggle } from "../ThemeToggle";
 import ProjectSelect from "./ProjectSelect";
 import { type Project } from "~/app/models";
 import ProfileDropdown from "./ProfileDropdown";
+import AddProjectButton from "./AddProjectButton";
 
 export default async function TopNavbar() {
   const projects: Project[] = await getProjects();
   const user = await getUserFromToken();
+  const activeProjectId = await getActiveProject();
 
   return (
     <nav className="flex items-center justify-between border-b border-border/40 bg-background p-5 text-primary">
@@ -22,7 +24,13 @@ export default async function TopNavbar() {
         <ThemeToggle />
         {user ? (
           <>
-            <ProjectSelect projects={projects} />
+            <div className="flex items-center gap-3">
+              <ProjectSelect
+                projects={projects}
+                value={activeProjectId ? activeProjectId : ""}
+              />
+              <AddProjectButton />
+            </div>
             <ProfileDropdown user={user} />
           </>
         ) : (

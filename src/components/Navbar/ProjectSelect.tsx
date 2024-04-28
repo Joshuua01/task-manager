@@ -8,15 +8,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { saveCookie } from "~/lib/auth";
+import { saveCookie } from "~/lib/actions";
 
-export default function ProjectSelect({ projects }: { projects: Project[] }) {
+export default function ProjectSelect({
+  projects,
+  value,
+}: {
+  projects: Project[];
+  value: string;
+}) {
   const handleProjectChange = async (projectId: string) => {
     await saveCookie("activeProject", projectId);
   };
 
   return (
-    <Select onValueChange={handleProjectChange}>
+    <Select onValueChange={handleProjectChange} value={value}>
       <SelectTrigger className="w-[200px]">
         <SelectValue placeholder="Select project" />
       </SelectTrigger>
