@@ -2,7 +2,7 @@
 import {
   addProject,
   deleteProject,
-  getProjects,
+  getAllProjects,
   getUserByLogin,
 } from "~/server/db";
 import { type z } from "zod";
@@ -125,4 +125,8 @@ export async function removeProject() {
   await deleteProject(Number(projectId));
   await saveCookie("activeProject", "");
   redirect("/");
+}
+
+export async function getProjects() {
+  return await getAllProjects();
 }

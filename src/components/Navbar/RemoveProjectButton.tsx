@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { getActiveProject, removeProject } from "~/lib/actions";
+import { removeProject } from "~/lib/actions";
 
 export default function RemoveProjectButton() {
   const handleRemoveProject = async () => {

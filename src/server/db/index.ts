@@ -8,13 +8,13 @@ import { type Project } from "~/app/models";
 // Use this object to send drizzle queries to your DB
 export const db = drizzle(sql, { schema });
 
-export const getProjects = async () => {
+export const getAllProjects = async () => {
   return await db.query.projects.findMany();
 };
 
-export const getUserByLogin = async (login: string) => {
-  return await db.query.users.findFirst({
-    where: eq(schema.users.login, login),
+export const getProjectById = async (id: number) => {
+  return await db.query.projects.findFirst({
+    where: eq(schema.projects.id, id),
   });
 };
 
@@ -24,4 +24,10 @@ export const addProject = async (project: Project) => {
 
 export const deleteProject = async (id: number) => {
   return await db.delete(schema.projects).where(eq(schema.projects.id, id));
+};
+
+export const getUserByLogin = async (login: string) => {
+  return await db.query.users.findFirst({
+    where: eq(schema.users.login, login),
+  });
 };

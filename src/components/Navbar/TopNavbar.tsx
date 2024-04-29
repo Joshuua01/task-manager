@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { getActiveProject, getUserFromToken } from "~/lib/actions";
-import { getProjects } from "~/server/db";
+import { getActiveProject, getProjects, getUserFromToken } from "~/lib/actions";
 import { ThemeToggle } from "../ThemeToggle";
 import ProjectSelect from "./ProjectSelect";
 import { type Project } from "~/app/models";
