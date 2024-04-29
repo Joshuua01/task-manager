@@ -7,6 +7,7 @@ import ProjectSelect from "./ProjectSelect";
 import { type Project } from "~/app/models";
 import ProfileDropdown from "./ProfileDropdown";
 import AddProjectButton from "./AddProjectButton";
+import RemoveProjectButton from "./RemoveProjectButton";
 
 export default async function TopNavbar() {
   const projects: Project[] = await getProjects();
@@ -30,6 +31,7 @@ export default async function TopNavbar() {
                 value={activeProjectId ? activeProjectId : ""}
               />
               <AddProjectButton />
+              <RemoveProjectButton />
             </div>
             <ProfileDropdown user={user} />
           </>

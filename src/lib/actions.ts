@@ -1,5 +1,10 @@
 "use server";
-import { addProject, getProjects, getUserByLogin } from "~/server/db";
+import {
+  addProject,
+  deleteProject,
+  getProjects,
+  getUserByLogin,
+} from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
@@ -112,4 +117,12 @@ export async function createProject(project: Project) {
   }
   await addProject(project);
   return;
+}
+
+export async function removeProject() {
+  const projectId = await getActiveProject();
+  if (!projectId) return;
+  await deleteProject(Number(projectId));
+  await saveCookie("activeProject", "");
+  redirect("/");
 }

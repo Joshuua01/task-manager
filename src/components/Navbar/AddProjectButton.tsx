@@ -14,7 +14,7 @@ export default function AddProjectButton() {
     <Dialog>
       <DialogTrigger asChild>
         <Button size={"icon"} variant={"outline"}>
-          <PlusIcon />
+          <PlusIcon size={20} />
         </Button>
       </DialogTrigger>
       <DialogContent className="border border-border">

@@ -21,3 +21,7 @@ export const getUserByLogin = async (login: string) => {
 export const addProject = async (project: Project) => {
   return await db.insert(schema.projects).values(project);
 };
+
+export const deleteProject = async (id: number) => {
+  return await db.delete(schema.projects).where(eq(schema.projects.id, id));
+};
