@@ -3,6 +3,7 @@ import {
   addProject,
   deleteProject,
   getAllProjects,
+  getProjectById,
   getUserByLogin,
 } from "~/server/db";
 import { type z } from "zod";
@@ -105,7 +106,8 @@ export async function saveCookie(name: string, value: string) {
 export async function getActiveProject() {
   const activeProjectId = cookies().get("activeProject")?.value;
   if (!activeProjectId) return null;
-  return activeProjectId.toString();
+  const project = await getProjectById(Number(activeProjectId));
+  return project;
 }
 
 export async function createProject(project: Project) {
@@ -120,9 +122,9 @@ export async function createProject(project: Project) {
 }
 
 export async function removeProject() {
-  const projectId = await getActiveProject();
-  if (!projectId) return;
-  await deleteProject(Number(projectId));
+  const project = await getActiveProject();
+  if (!project) return;
+  await deleteProject(Number(project.id));
   await saveCookie("activeProject", "");
   redirect("/");
 }
