@@ -11,10 +11,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { login } from "~/lib/auth";
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { login } from "~/lib/actions";
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -27,7 +27,6 @@ export default function LoginForm() {
 
   async function onSubmit(data: z.infer<typeof LoginSchema>) {
     const result = await login(data);
-    console.log(result);
     if (result?.error) {
       form.setError("root", {
         type: "custom",

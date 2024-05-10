@@ -1,4 +1,4 @@
-import { logout } from "~/lib/auth";
+import { logout } from "~/lib/actions";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,

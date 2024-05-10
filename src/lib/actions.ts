@@ -1,12 +1,20 @@
 "use server";
-import { getUserByLogin } from "~/server/db";
+import {
+  addProject,
+  deleteProject,
+  getAllProjects,
+  getProjectById,
+  getUserByLogin,
+  editProject as editProjectDB,
+} from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type EncryptedUser } from "~/app/models";
+import { type Project, type EncryptedUser } from "~/app/models";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 const secret = process.env.JWT_SECRET;
 const key = new TextEncoder().encode(secret);
@@ -95,4 +103,49 @@ export const getUserFromToken = async () => {
 
 export async function saveCookie(name: string, value: string) {
   cookies().set(name, value);
+}
+
+export async function getActiveProject() {
+  const activeProjectId = cookies().get("activeProject")?.value;
+  if (!activeProjectId) return null;
+  const project = await getProjectById(Number(activeProjectId));
+  return project as Project;
+}
+
+export async function createProject(project: Project) {
+  const projects = await getProjects();
+  if (projects.some((p) => p.name === project.name)) {
+    return {
+      error: "Project with this name already exists",
+    };
+  }
+  await addProject(project);
+  revalidatePath("/");
+}
+
+export async function editProject(project: Project) {
+  const currentProject = await getActiveProject();
+  if (!currentProject) return;
+  if (
+    currentProject.name === project.name &&
+    currentProject.description === project.description
+  ) {
+    return {
+      error: "Values cannot be the same",
+    };
+  }
+  await editProjectDB(currentProject.id, project);
+  revalidatePath("/");
+}
+
+export async function removeProject() {
+  const project = await getActiveProject();
+  if (!project) return;
+  await deleteProject(Number(project.id));
+  await saveCookie("activeProject", "");
+  redirect("/");
+}
+
+export async function getProjects() {
+  return await getAllProjects();
 }
