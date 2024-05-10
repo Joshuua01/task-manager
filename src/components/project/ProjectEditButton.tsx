@@ -2,7 +2,7 @@
 
 import { Settings } from "lucide-react";
 import { Button } from "../ui/button";
-import AddProjectDialogForm from "../forms/AddProjectDialogForm";
+import ProjectDialogForm from "../forms/ProjectDialogForm";
 import {
   Dialog,
   DialogTrigger,
@@ -10,21 +10,34 @@ import {
   DialogHeader,
   DialogDescription,
 } from "../ui/dialog";
+import { editProject } from "~/lib/actions";
+import { useState } from "react";
+import { type Project } from "~/app/models";
 
-export default function ProjectEditButton() {
+export default function ProjectEditButton({
+  currentProject,
+}: {
+  currentProject: Project | null;
+}) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size={"icon"} variant={"outline"}>
+        <Button size={"icon"} variant={"outline"} disabled={!currentProject}>
           <Settings size={20} />
         </Button>
       </DialogTrigger>
       <DialogContent className="border border-border">
-        <DialogHeader>Add new project</DialogHeader>
+        <DialogHeader>Edit current project</DialogHeader>
         <DialogDescription>
-          Please enter the name of the project you want to add.
+          Please enter new name and/or description.
         </DialogDescription>
-        <AddProjectDialogForm />
+        <ProjectDialogForm
+          activeProject={currentProject ? currentProject : undefined}
+          submitAction={editProject}
+          setDialogOpen={setOpen}
+        />
       </DialogContent>
     </Dialog>
   );

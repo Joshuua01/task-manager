@@ -14,26 +14,38 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { createProject } from "~/lib/actions";
 import { type Project } from "~/app/models";
+import { type Dispatch, type SetStateAction } from "react";
 
-export default function AddProjectDialogForm() {
+interface ProjectDialogFormProps {
+  activeProject?: Project;
+  submitAction: (payload: Project) => Promise<{ error?: string } | undefined>;
+  setDialogOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function ProjectDialogForm({
+  activeProject,
+  submitAction,
+  setDialogOpen,
+}: ProjectDialogFormProps) {
   const form = useForm<z.infer<typeof CreateProjectSchema>>({
     resolver: zodResolver(CreateProjectSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: activeProject?.name ?? "",
+      description: activeProject?.description ?? "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof CreateProjectSchema>) {
-    const result = await createProject(data as Project);
+    const result = await submitAction(data as Project);
     if (result?.error) {
       form.setError("root", {
         type: "custom",
         message: result.error,
       });
       return;
+    } else {
+      setDialogOpen(false);
     }
   }
 

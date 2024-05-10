@@ -5,6 +5,7 @@ import {
   getAllProjects,
   getProjectById,
   getUserByLogin,
+  editProject as editProjectDB,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
@@ -13,6 +14,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { type Project, type EncryptedUser } from "~/app/models";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 const secret = process.env.JWT_SECRET;
 const key = new TextEncoder().encode(secret);
@@ -107,7 +109,7 @@ export async function getActiveProject() {
   const activeProjectId = cookies().get("activeProject")?.value;
   if (!activeProjectId) return null;
   const project = await getProjectById(Number(activeProjectId));
-  return project;
+  return project as Project;
 }
 
 export async function createProject(project: Project) {
@@ -118,7 +120,22 @@ export async function createProject(project: Project) {
     };
   }
   await addProject(project);
-  return;
+  revalidatePath("/");
+}
+
+export async function editProject(project: Project) {
+  const currentProject = await getActiveProject();
+  if (!currentProject) return;
+  if (
+    currentProject.name === project.name &&
+    currentProject.description === project.description
+  ) {
+    return {
+      error: "Values cannot be the same",
+    };
+  }
+  await editProjectDB(currentProject.id, project);
+  revalidatePath("/");
 }
 
 export async function removeProject() {

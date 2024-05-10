@@ -1,3 +1,5 @@
+"use client";
+
 import { PlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -7,11 +9,15 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "../ui/dialog";
-import AddProjectDialogForm from "../forms/AddProjectDialogForm";
+import ProjectDialogForm from "../forms/ProjectDialogForm";
+import { createProject } from "~/lib/actions";
+import { useState } from "react";
 
 export default function AddProjectButton() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"icon"} variant={"outline"}>
           <PlusIcon size={20} />
@@ -22,7 +28,10 @@ export default function AddProjectButton() {
         <DialogDescription>
           Please enter the name of the project you want to add.
         </DialogDescription>
-        <AddProjectDialogForm />
+        <ProjectDialogForm
+          submitAction={createProject}
+          setDialogOpen={setOpen}
+        />
       </DialogContent>
     </Dialog>
   );

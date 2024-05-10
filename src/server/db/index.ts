@@ -26,6 +26,13 @@ export const deleteProject = async (id: number) => {
   return await db.delete(schema.projects).where(eq(schema.projects.id, id));
 };
 
+export const editProject = async (id: number, project: Project) => {
+  return await db
+    .update(schema.projects)
+    .set(project)
+    .where(eq(schema.projects.id, id));
+};
+
 export const getUserByLogin = async (login: string) => {
   return await db.query.users.findFirst({
     where: eq(schema.users.login, login),
