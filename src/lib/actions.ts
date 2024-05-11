@@ -125,6 +125,7 @@ export async function createProject(project: Project) {
 
 export async function editProject(project: Project) {
   const currentProject = await getActiveProject();
+  const projects = await getProjects();
   if (!currentProject) return;
   if (
     currentProject.name === project.name &&
@@ -132,6 +133,11 @@ export async function editProject(project: Project) {
   ) {
     return {
       error: "Values cannot be the same",
+    };
+  }
+  if (projects.some((p) => p.name === project.name)) {
+    return {
+      error: "Project with this name already exists",
     };
   }
   await editProjectDB(currentProject.id, project);

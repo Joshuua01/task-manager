@@ -79,7 +79,7 @@ export default function ProjectDialogForm({
           )}
         />
         <Button type="submit" className="w-full">
-          Add project
+          {activeProject ? "Edit project" : "Add project"}
         </Button>
         {form.formState.errors.root && (
           <p className="w-full text-center font-semibold text-destructive">
