@@ -7,6 +7,8 @@ import { type Project } from "~/app/models";
 import ProfileDropdown from "./ProfileDropdown";
 import AddProjectButton from "./AddProjectButton";
 import RemoveProjectButton from "./RemoveProjectButton";
+import ProjectEditButton from "../project/ProjectEditButton";
+import { Separator } from "../ui/separator";
 
 export default async function TopNavbar() {
   const projects: Project[] = await getProjects();
@@ -16,12 +18,16 @@ export default async function TopNavbar() {
   return (
     <nav className="flex items-center justify-between border-b border-border bg-background p-5 text-primary">
       <div className="flex items-center gap-5">
-        <Link href="/" className="text-2xl font-bold">
+        <Link
+          href="/"
+          className="text-3xl font-bold uppercase tracking-wide first-letter:text-4xl"
+        >
           Task-Manager
         </Link>
       </div>
       <div className="flex items-center gap-5">
         <ThemeToggle />
+        <Separator orientation="vertical" className="h-12" />
         {user ? (
           <>
             <div className="flex items-center gap-3">
@@ -34,7 +40,9 @@ export default async function TopNavbar() {
                 }
               />
               <AddProjectButton />
+              <ProjectEditButton currentProject={activeProject} />
               <RemoveProjectButton />
+              <Separator orientation="vertical" className="h-12" />
             </div>
             <ProfileDropdown user={user} />
           </>
