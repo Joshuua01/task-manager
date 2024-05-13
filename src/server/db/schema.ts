@@ -6,10 +6,13 @@ import {
   pgEnum,
   pgTableCreator,
   serial,
+  timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
 
 export const roleEnum = pgEnum("role", ["admin", "developer", "devops"]);
+export const priorityEnum = pgEnum("priority", ["low", "medium", "high"]);
+export const statusEnum = pgEnum("status", ["to do", "in progress", "done"]);
 
 export const createTable = pgTableCreator((name) => `task-manager_${name}`);
 
@@ -32,4 +35,19 @@ export const users = createTable("users", {
   login: varchar("login", { length: 256 }).notNull(),
   password: varchar("password", { length: 256 }).notNull(),
   role: roleEnum("role").notNull(),
+});
+
+export const stories = createTable("stories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 256 }).notNull(),
+  description: varchar("description", { length: 256 }).notNull(),
+  priority: priorityEnum("priority").notNull().default("medium"),
+  status: statusEnum("status").notNull().default("to do"),
+  creationDate: timestamp("creation_date").notNull().defaultNow(),
+  projectId: serial("project_id")
+    .references(() => projects.id)
+    .notNull(),
+  ownerId: serial("owner_id")
+    .references(() => users.id)
+    .notNull(),
 });
