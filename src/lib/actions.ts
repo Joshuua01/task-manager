@@ -7,6 +7,7 @@ import {
   getUserByLogin,
   editProject as editProjectDB,
   getStoriesByProjectId as getStoriesByProjectIdDB,
+  createStory as createStoryDB,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
@@ -165,4 +166,15 @@ export async function getStoriesByProjectId(projectId: number | undefined) {
     return;
   }
   return (await getStoriesByProjectIdDB(projectId)) as Story[];
+}
+
+export async function createStory(story: Story) {
+  const project = await getActiveProject();
+  const currentUser = await getUserFromToken();
+
+  story.projectId = Number(project?.id);
+  story.ownerId = Number(currentUser?.id);
+
+  await createStoryDB(story);
+  revalidatePath("/");
 }

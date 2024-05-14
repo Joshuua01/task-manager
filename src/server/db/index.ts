@@ -3,7 +3,7 @@ import { sql } from "@vercel/postgres";
 
 import * as schema from "./schema";
 import { eq } from "drizzle-orm";
-import { type Project } from "~/app/models";
+import { Story, type Project } from "~/app/models";
 
 // Use this object to send drizzle queries to your DB
 export const db = drizzle(sql, { schema });
@@ -43,4 +43,8 @@ export const getStoriesByProjectId = async (projectId: number) => {
   return await db.query.stories.findMany({
     where: eq(schema.stories.projectId, projectId),
   });
+};
+
+export const createStory = async (story: Story) => {
+  return await db.insert(schema.stories).values(story);
 };

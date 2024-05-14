@@ -1,4 +1,4 @@
-import StoriesCard from "~/components/stories/stories-card";
+import StoriesCard from "~/components/story/stories-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getActiveProject, getUserFromToken } from "~/lib/actions";
 

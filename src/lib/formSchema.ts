@@ -17,3 +17,13 @@ export const CreateProjectSchema = z.object({
     message: "Please enter a description for your project!",
   }),
 });
+
+export const StorySchema = z.object({
+  name: z.string().min(1, {
+    message: "Please enter a name for your story!",
+  }),
+  description: z.string().min(1, {
+    message: "Please enter a description for your story!",
+  }),
+  priority: z.enum(["low", "medium", "high"]).default("medium"),
+});
