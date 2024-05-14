@@ -21,11 +21,6 @@ export function creationDateString(date: Date) {
       return Math.round(diffInSeconds / (60 * 60)) + " hours ago";
     }
   } else {
-    if (diffInSeconds < 60 * 60 * 24) {
-      return "Yesterday";
-    }
-    if (diffInSeconds > 60 * 60 * 24) {
-      return Math.round(diffInSeconds / (60 * 60 * 24)) + " days ago";
-    }
+    return Math.round(diffInSeconds / (60 * 60 * 24)) + " days ago";
   }
 }

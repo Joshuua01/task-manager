@@ -4,6 +4,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { type Story } from "~/app/models";
 import { creationDateString } from "~/lib/utils";
 import { Button } from "../ui/button";
+import { DataTableActions } from "./data-table-action";
 
 export const columns: ColumnDef<Story>[] = [
   {
@@ -42,9 +43,13 @@ export const columns: ColumnDef<Story>[] = [
   },
   {
     accessorKey: "creationDate",
-    header: "Created at",
+    header: "Created",
     cell: ({ row }) => {
       return creationDateString(row.getValue("creationDate"));
     },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <DataTableActions row={row} />,
   },
 ];
