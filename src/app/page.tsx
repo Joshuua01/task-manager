@@ -1,3 +1,4 @@
+import StoriesCard from "~/components/stories/stories-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getActiveProject, getUserFromToken } from "~/lib/actions";
 
@@ -23,7 +24,7 @@ export default async function HomePage() {
           </TabsList>
         </div>
         <TabsContent value="stories">
-          <div>stories</div>
+          <StoriesCard />
         </TabsContent>
         <TabsContent value="tasks">
           <div>tasks</div>

@@ -6,13 +6,14 @@ import {
   getProjectById,
   getUserByLogin,
   editProject as editProjectDB,
+  getStoriesByProjectId as getStoriesByProjectIdDB,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type Project, type EncryptedUser } from "~/app/models";
+import { type Project, type EncryptedUser, type Story } from "~/app/models";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
@@ -102,7 +103,10 @@ export const getUserFromToken = async () => {
 };
 
 export async function saveCookie(name: string, value: string) {
-  cookies().set(name, value);
+  cookies().set(name, value, {
+    httpOnly: true,
+    expires: Date.now() + oneDay * 7,
+  });
 }
 
 export async function getActiveProject() {
@@ -154,4 +158,11 @@ export async function removeProject() {
 
 export async function getProjects() {
   return await getAllProjects();
+}
+
+export async function getStoriesByProjectId(projectId: number | undefined) {
+  if (projectId === undefined) {
+    return;
+  }
+  return (await getStoriesByProjectIdDB(projectId)) as Story[];
 }

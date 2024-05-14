@@ -10,3 +10,12 @@ export type EncryptedUser = {
   surname: string;
   role: string;
 };
+
+export type Story = {
+  id: number;
+  name: string;
+  description: string;
+  priority: "low" | "medium" | "high";
+  status: "to do" | "in progress" | "done";
+  creationDate: Date;
+};
