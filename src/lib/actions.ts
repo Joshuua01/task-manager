@@ -8,6 +8,9 @@ import {
   editProject as editProjectDB,
   getStoriesByProjectId as getStoriesByProjectIdDB,
   createStory as createStoryDB,
+  deleteStory as deleteStoryDB,
+  editStory as editStoryDB,
+  getStoryById,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
@@ -178,3 +181,21 @@ export async function createStory(story: Story) {
   await createStoryDB(story);
   revalidatePath("/");
 }
+
+export async function deleteStory(storyId: number) {
+  await deleteStoryDB(storyId);
+  revalidatePath("/");
+}
+
+export async function changeStoryStatus(
+  storyId: number,
+  status: "to do" | "in progress" | "done",
+) {
+  const story = await getStoryById(storyId);
+  if (!story) return;
+  story.status = status;
+  await editStoryDB(storyId, story);
+  revalidatePath("/");
+}
+
+export async function editStory(storyId: number) {}

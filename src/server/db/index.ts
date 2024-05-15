@@ -39,6 +39,12 @@ export const editProject = async (id: number, project: Project) => {
     .where(eq(schema.projects.id, id));
 };
 
+export const getStoryById = async (id: number) => {
+  return await db.query.stories.findFirst({
+    where: eq(schema.stories.id, id),
+  });
+};
+
 export const getStoriesByProjectId = async (projectId: number) => {
   return await db.query.stories.findMany({
     where: eq(schema.stories.projectId, projectId),
@@ -47,4 +53,15 @@ export const getStoriesByProjectId = async (projectId: number) => {
 
 export const createStory = async (story: Story) => {
   return await db.insert(schema.stories).values(story);
+};
+
+export const deleteStory = async (storyId: number) => {
+  return await db.delete(schema.stories).where(eq(schema.stories.id, storyId));
+};
+
+export const editStory = async (id: number, story: Story) => {
+  return await db
+    .update(schema.stories)
+    .set(story)
+    .where(eq(schema.stories.id, id));
 };
