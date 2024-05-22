@@ -24,3 +24,29 @@ export function creationDateString(date: Date) {
     return Math.round(diffInSeconds / (60 * 60 * 24)) + " days ago";
   }
 }
+
+export const prioritySort = (rowA: any, rowB: any, columnId: any): number => {
+  const value = (A: string): number => {
+    return A === "low" ? 1 : A === "medium" ? 2 : 3;
+  };
+
+  const Anum = value(rowA.original.priority);
+  const Bnum = value(rowB.original.priority);
+
+  if (Anum === Bnum) return 0;
+
+  return Anum < Bnum ? 1 : -1;
+};
+
+export const statusSort = (rowA: any, rowB: any, columnId: any): number => {
+  const value = (A: string): number => {
+    return A === "to do" ? 1 : A === "in progress" ? 2 : 3;
+  };
+
+  const Anum = value(rowA.original.status);
+  const Bnum = value(rowB.original.status);
+
+  if (Anum === Bnum) return 0;
+
+  return Anum < Bnum ? 1 : -1;
+};

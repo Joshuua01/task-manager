@@ -172,6 +172,13 @@ export async function getStoriesByProjectId(projectId: number | undefined) {
 }
 
 export async function createStory(story: Story) {
+  const stories = await getStoriesByProjectId(story.projectId);
+  if (stories?.some((s) => s.name === story.name)) {
+    return {
+      error: "Story with this name already exists",
+    };
+  }
+
   const project = await getActiveProject();
   const currentUser = await getUserFromToken();
 
@@ -198,4 +205,17 @@ export async function changeStoryStatus(
   revalidatePath("/");
 }
 
-export async function editStory(storyId: number) {}
+export async function editStory(editedStoryId: number, story: Story) {
+  const fetchStory = await getStoryById(editedStoryId);
+  if (!fetchStory) return;
+  if (
+    fetchStory.name == story.name &&
+    fetchStory.description == story.description
+  ) {
+    return {
+      error: "Values cannot be the same",
+    };
+  }
+  await editStoryDB(editedStoryId, story);
+  revalidatePath("/");
+}

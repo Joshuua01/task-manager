@@ -15,16 +15,7 @@ export default async function StoriesCard() {
   if (!activeProject) return null;
   const stories = await getStoriesByProjectId(activeProject?.id);
   return (
-    <Card className="mt-6 border border-border">
-      <CardHeader>
-        <div className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle> Stories </CardTitle>
-            <CardDescription> Here you can see stories.</CardDescription>
-          </div>
-          <AddStoryButton />
-        </div>
-      </CardHeader>
+    <Card className="mt-6 border border-border py-6">
       <CardContent>
         <DataTable columns={columns} data={stories} />
       </CardContent>

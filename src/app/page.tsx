@@ -7,7 +7,7 @@ export default async function HomePage() {
   const activeProject = await getActiveProject();
 
   return (
-    <div className="flex h-full w-full flex-col bg-background p-10">
+    <div className="flex h-full w-full flex-col bg-background px-10 py-5">
       <Tabs defaultValue="stories">
         <div className="flex flex-row items-center justify-between">
           <div>

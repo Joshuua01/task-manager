@@ -9,8 +9,8 @@ import {
 } from "../ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import { Button } from "../ui/button";
-import { startTransition } from "react";
-import { changeStoryStatus, deleteStory } from "~/lib/actions";
+import { startTransition, useState } from "react";
+import { changeStoryStatus, deleteStory, editStory } from "~/lib/actions";
 import {
   Dialog,
   DialogHeader,
@@ -18,26 +18,31 @@ import {
   DialogContent,
   DialogDescription,
 } from "../ui/dialog";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import StoryDialogForm from "../forms/story-dialog-form";
+import { Story } from "~/app/models";
 
-interface DataTableActionsProps<TData> {
-  row: Row<TData>;
+interface DataTableOptionsProps<TData> {
+  row: Story;
 }
 
-export function DataTableActions<TData>({ row }: DataTableActionsProps<TData>) {
+export function DataTableOptions<Story>({ row }: DataTableOptionsProps<Story>) {
   const onClickDelete = () => {
     startTransition(async () => {
-      await deleteStory(Number(row.getValue("id")));
+      await deleteStory(Number(row.id));
     });
   };
 
   const onClickEditStatus = (status: "to do" | "in progress" | "done") => {
     startTransition(async () => {
-      await changeStoryStatus(row.getValue("id"), status);
+      await changeStoryStatus(row.id, status);
     });
   };
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant={"ghost"}>
@@ -45,7 +50,7 @@ export function DataTableActions<TData>({ row }: DataTableActionsProps<TData>) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="border-border" align="end">
-          {row.getValue("status") === "to do" && (
+          {row.status === "to do" && (
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => onClickEditStatus("in progress")}
@@ -53,7 +58,7 @@ export function DataTableActions<TData>({ row }: DataTableActionsProps<TData>) {
               Start progress
             </DropdownMenuItem>
           )}
-          {row.getValue("status") === "in progress" && (
+          {row.status === "in progress" && (
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => onClickEditStatus("done")}
@@ -61,8 +66,9 @@ export function DataTableActions<TData>({ row }: DataTableActionsProps<TData>) {
               Close
             </DropdownMenuItem>
           )}
+          <DropdownMenuSeparator />
           <DialogTrigger asChild>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuItem className="cursor-pointer" onClick={onClickDelete}>
             Delete
@@ -74,6 +80,11 @@ export function DataTableActions<TData>({ row }: DataTableActionsProps<TData>) {
         <DialogDescription>
           Please enter new name and/or description.
         </DialogDescription>
+        <StoryDialogForm
+          editedStory={row}
+          setDialogOpen={setDialogOpen}
+          submitAction={editStory}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -26,4 +26,5 @@ export const StorySchema = z.object({
     message: "Please enter a description for your story!",
   }),
   priority: z.enum(["low", "medium", "high"]).default("medium"),
+  status: z.enum(["to do", "in progress", "done"]).default("to do"),
 });

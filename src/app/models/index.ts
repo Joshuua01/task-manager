@@ -11,3 +11,33 @@ export type EncryptedUser = {
   surname: string;
   role: string;
 };
+
+export const priorities = [
+  {
+    label: "High",
+    value: "high",
+  },
+  {
+    label: "Medium",
+    value: "medium",
+  },
+  {
+    label: "Low",
+    value: "low",
+  },
+];
+
+export const statuses = [
+  {
+    label: "Done",
+    value: "done",
+  },
+  {
+    label: "In progress",
+    value: "in-progress",
+  },
+  {
+    label: "To do",
+    value: "to do",
+  },
+];

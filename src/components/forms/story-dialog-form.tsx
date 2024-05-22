@@ -26,7 +26,10 @@ import {
 
 interface StoryDialogFormProps {
   editedStory?: Story;
-  submitAction: (payload: Story) => Promise<void>;
+  submitAction: (
+    payload: Story,
+    id?: number,
+  ) => Promise<{ error?: string } | undefined>;
   setDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -41,12 +44,26 @@ export default function StoryDialogForm({
       name: editedStory?.name ?? "",
       description: editedStory?.description ?? "",
       priority: editedStory?.priority ?? "medium",
+      status: editedStory?.status ?? "to do",
     },
   });
 
   async function onSubmit(data: z.infer<typeof StorySchema>) {
-    await submitAction(data as Story);
-    setDialogOpen(false);
+    let result = undefined;
+    if (editedStory?.id) {
+      result = await submitAction(data as Story, editedStory?.id);
+    } else {
+      result = await submitAction(data as Story);
+    }
+    if (result?.error) {
+      form.setError("root", {
+        type: "custom",
+        message: result.error,
+      });
+      return;
+    } else {
+      setDialogOpen(false);
+    }
   }
 
   return (
@@ -97,6 +114,31 @@ export default function StoryDialogForm({
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="to do">To do</SelectItem>
+                    <SelectItem value="in progress">In progress</SelectItem>
+                    <SelectItem value="done">Done</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
