@@ -6,13 +6,18 @@ import {
   getProjectById,
   getUserByLogin,
   editProject as editProjectDB,
+  getStoriesByProjectId as getStoriesByProjectIdDB,
+  createStory as createStoryDB,
+  deleteStory as deleteStoryDB,
+  editStory as editStoryDB,
+  getStoryById,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type Project, type EncryptedUser } from "~/app/models";
+import { type Project, type EncryptedUser, type Story } from "~/app/models";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
@@ -102,7 +107,10 @@ export const getUserFromToken = async () => {
 };
 
 export async function saveCookie(name: string, value: string) {
-  cookies().set(name, value);
+  cookies().set(name, value, {
+    httpOnly: true,
+    expires: Date.now() + oneDay * 7,
+  });
 }
 
 export async function getActiveProject() {
@@ -154,4 +162,65 @@ export async function removeProject() {
 
 export async function getProjects() {
   return await getAllProjects();
+}
+
+export async function getStoriesByProjectId(projectId: number | undefined) {
+  if (projectId === undefined) {
+    return;
+  }
+  return (await getStoriesByProjectIdDB(projectId)) as Story[];
+}
+
+export async function createStory(story: Story) {
+  const stories = await getStoriesByProjectId(story.projectId);
+  if (stories?.some((s) => s.name === story.name)) {
+    return {
+      error: "Story with this name already exists",
+    };
+  }
+
+  const project = await getActiveProject();
+  const currentUser = await getUserFromToken();
+
+  story.projectId = Number(project?.id);
+  story.ownerId = Number(currentUser?.id);
+
+  await createStoryDB(story);
+  revalidatePath("/");
+}
+
+export async function deleteStory(storyId: number) {
+  await deleteStoryDB(storyId);
+  revalidatePath("/");
+}
+
+export async function changeStoryStatus(
+  storyId: number,
+  status: "to do" | "in progress" | "done",
+) {
+  const story = await getStoryById(storyId);
+  if (!story) return;
+  story.status = status;
+  await editStoryDB(storyId, story);
+  revalidatePath("/");
+}
+
+export async function editStory(story: Story, editedStoryId: number) {
+  const fetchStory = await getStoryById(editedStoryId);
+  console.log(fetchStory);
+  console.log(story);
+  if (!fetchStory) return;
+  if (
+    fetchStory.name != story.name ||
+    fetchStory.description != story.description ||
+    fetchStory.priority != story.priority ||
+    fetchStory.status != story.status
+  ) {
+    await editStoryDB(editedStoryId, story);
+    revalidatePath("/");
+  } else {
+    return {
+      error: "Values cannot be the same",
+    };
+  }
 }
