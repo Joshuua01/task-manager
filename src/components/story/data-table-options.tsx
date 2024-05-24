@@ -1,6 +1,5 @@
 "use client";
 
-import { type Row } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +19,7 @@ import {
 } from "../ui/dialog";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import StoryDialogForm from "../forms/story-dialog-form";
-import { Story } from "~/app/models";
+import { type Story } from "~/app/models";
 
 interface DataTableOptionsProps<TData> {
   row: Story;

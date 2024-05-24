@@ -205,17 +205,22 @@ export async function changeStoryStatus(
   revalidatePath("/");
 }
 
-export async function editStory(editedStoryId: number, story: Story) {
+export async function editStory(story: Story, editedStoryId: number) {
   const fetchStory = await getStoryById(editedStoryId);
+  console.log(fetchStory);
+  console.log(story);
   if (!fetchStory) return;
   if (
-    fetchStory.name == story.name &&
-    fetchStory.description == story.description
+    fetchStory.name != story.name ||
+    fetchStory.description != story.description ||
+    fetchStory.priority != story.priority ||
+    fetchStory.status != story.status
   ) {
+    await editStoryDB(editedStoryId, story);
+    revalidatePath("/");
+  } else {
     return {
       error: "Values cannot be the same",
     };
   }
-  await editStoryDB(editedStoryId, story);
-  revalidatePath("/");
 }

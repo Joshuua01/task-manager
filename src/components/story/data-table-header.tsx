@@ -1,4 +1,4 @@
-import { Table } from "@tanstack/react-table";
+import { type Table } from "@tanstack/react-table";
 import { Input } from "../ui/input";
 import DataTableFilter from "./data-table-filter";
 import AddStoryButton from "./add-story-button";
