@@ -3,7 +3,7 @@ import { sql } from "@vercel/postgres";
 
 import * as schema from "./schema";
 import { eq } from "drizzle-orm";
-import { Story, type Project } from "~/app/models";
+import { type Story, type Project } from "~/app/models";
 
 // Use this object to send drizzle queries to your DB
 export const db = drizzle(sql, { schema });

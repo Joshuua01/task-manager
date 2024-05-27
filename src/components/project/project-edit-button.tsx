@@ -2,7 +2,7 @@
 
 import { Settings } from "lucide-react";
 import { Button } from "../ui/button";
-import ProjectDialogForm from "../forms/ProjectDialogForm";
+import ProjectDialogForm from "../forms/project-dialog-form";
 import {
   Dialog,
   DialogTrigger,

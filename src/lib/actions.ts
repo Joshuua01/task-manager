@@ -205,7 +205,11 @@ export async function changeStoryStatus(
   revalidatePath("/");
 }
 
-export async function editStory(story: Story, editedStoryId: number) {
+export async function editStory(
+  story: Story,
+  editedStoryId: number | undefined,
+) {
+  if (!editedStoryId) return;
   const fetchStory = await getStoryById(editedStoryId);
   console.log(fetchStory);
   console.log(story);

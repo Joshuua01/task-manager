@@ -2,12 +2,12 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { getActiveProject, getProjects, getUserFromToken } from "~/lib/actions";
 import { ThemeToggle } from "../ThemeToggle";
-import ProjectSelect from "./ProjectSelect";
+import ProjectSelect from "./project-select";
 import { type Project } from "~/app/models";
-import ProfileDropdown from "./ProfileDropdown";
-import AddProjectButton from "./AddProjectButton";
-import RemoveProjectButton from "./RemoveProjectButton";
-import ProjectEditButton from "../project/ProjectEditButton";
+import ProfileDropdown from "./profile-dropdown";
+import AddProjectButton from "./add-project-button";
+import RemoveProjectButton from "./remove-project-button";
+import ProjectEditButton from "../project/project-edit-button";
 import { Separator } from "../ui/separator";
 
 export default async function TopNavbar() {
