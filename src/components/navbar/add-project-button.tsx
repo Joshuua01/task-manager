@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "../ui/dialog";
-import ProjectDialogForm from "../forms/ProjectDialogForm";
+import ProjectDialogForm from "../forms/project-dialog-form";
 import { createProject } from "~/lib/actions";
 import { useState } from "react";
 

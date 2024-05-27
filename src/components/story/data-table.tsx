@@ -7,10 +7,10 @@ import {
   useReactTable,
   type SortingState,
   getSortedRowModel,
-  ColumnFiltersState,
+  type ColumnFiltersState,
   getFilteredRowModel,
   getPaginationRowModel,
-  PaginationState,
+  type PaginationState,
 } from "@tanstack/react-table";
 import {
   Table,
