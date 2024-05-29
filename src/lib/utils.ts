@@ -53,3 +53,8 @@ export const statusSort = (rowA: any, rowB: any, columnId: any): number => {
 
   return Anum < Bnum ? 1 : -1;
 };
+
+export function capitalizeFirstLetter(string: string) {
+  if (!string) return string;
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

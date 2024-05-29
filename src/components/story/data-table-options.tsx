@@ -19,7 +19,8 @@ import {
 } from "../ui/dialog";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import StoryDialogForm from "../forms/story-dialog-form";
-import { type Story } from "~/app/models";
+import { statusEnum, statuses, type Story } from "~/app/models";
+import { capitalizeFirstLetter } from "~/lib/utils";
 
 interface DataTableOptionsProps<TData> {
   row: Story;
@@ -49,23 +50,17 @@ export function DataTableOptions<Story>({ row }: DataTableOptionsProps<Story>) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="border-border" align="end">
-          {row.status === "to do" && (
+          {statusEnum.map((status) => (
             <DropdownMenuItem
+              key={status}
               className="cursor-pointer"
-              onClick={() => onClickEditStatus("in progress")}
+              onClick={() => onClickEditStatus(status)}
+              disabled={status === row.status}
             >
-              Start progress
+              {capitalizeFirstLetter(status)}
             </DropdownMenuItem>
-          )}
-          {row.status === "in progress" && (
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => onClickEditStatus("done")}
-            >
-              Close
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuSeparator />
+          ))}
+          <DropdownMenuSeparator className="my-1 border-t border-border" />
           <DialogTrigger asChild>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </DialogTrigger>
