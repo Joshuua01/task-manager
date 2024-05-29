@@ -12,6 +12,8 @@ export type EncryptedUser = {
   role: string;
 };
 
+export const statusEnum = ["to do", "in progress", "done"] as const;
+
 export const priorities = [
   {
     label: "High",
