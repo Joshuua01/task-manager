@@ -43,21 +43,54 @@ export const stories = createTable("stories", {
   ownerId: integer("owner_id").notNull(),
 });
 
+export const tasks = createTable("tasks", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 256 }).notNull(),
+  description: varchar("description", { length: 256 }).notNull(),
+  priority: priorityEnum("priority").notNull().default("medium"),
+  status: statusEnum("status").notNull().default("to do"),
+  expectedTime: integer("expected_time").notNull(),
+  creationDate: timestamp("creation_date").notNull().defaultNow(),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  storyId: integer("story_id").notNull(),
+  ownerId: integer("owner_id").notNull(),
+  assigneeId: integer("assignee_id").notNull(),
+});
+
 const usersRelations = relations(users, ({ many }) => ({
-  stories: many(stories),
+  owner: many(stories, { relationName: "owner" }),
+  asiggnee: many(stories, { relationName: "assignee" }),
+  tasks: many(tasks),
 }));
 
 const projectRelations = relations(projects, ({ many }) => ({
   stories: many(stories),
 }));
 
-const storiesRelations = relations(stories, ({ one }) => ({
+const storiesRelations = relations(stories, ({ one, many }) => ({
   projects: one(projects, {
     fields: [stories.projectId],
     references: [projects.id],
   }),
   users: one(users, {
     fields: [stories.ownerId],
+    references: [users.id],
+  }),
+  tasks: many(tasks),
+}));
+
+const tasksRelations = relations(tasks, ({ one, many }) => ({
+  stories: one(stories, {
+    fields: [tasks.storyId],
+    references: [stories.id],
+  }),
+  users: one(users, {
+    fields: [tasks.ownerId],
+    references: [users.id],
+  }),
+  assignee: one(users, {
+    fields: [tasks.assigneeId],
     references: [users.id],
   }),
 }));
