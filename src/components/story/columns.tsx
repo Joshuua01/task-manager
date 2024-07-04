@@ -8,6 +8,7 @@ import { type Story } from "~/models";
 import { creationDateString, prioritySort, statusSort } from "~/lib/utils";
 import { DataTableOptions } from "./data-table-options";
 import DataTableColHeader from "./data-table-col-header";
+import Link from "next/link";
 
 export const columns: ColumnDef<Story>[] = [
   {
@@ -21,6 +22,13 @@ export const columns: ColumnDef<Story>[] = [
     accessorKey: "name",
     header: ({ column }) => {
       return <DataTableColHeader title="Name" column={column} />;
+    },
+    cell: ({ row }) => {
+      return (
+        <span className={"cursor-pointer"}>
+          <Link href={`/story/${row.original.id}`}>{row.getValue("name")}</Link>
+        </span>
+      );
     },
     size: 250,
   },

@@ -3,14 +3,14 @@ import {
   addProject,
   deleteProject,
   getAllProjects,
-  getProjectById,
+  getProjectById as getProjectByIdDB,
   getUserByLogin,
   editProject as editProjectDB,
   getStoriesByProjectId as getStoriesByProjectIdDB,
   createStory as createStoryDB,
   deleteStory as deleteStoryDB,
   editStory as editStoryDB,
-  getStoryById,
+  getStoryById as getStoryByIdDB,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
@@ -116,8 +116,16 @@ export async function saveCookie(name: string, value: string) {
 export async function getActiveProject() {
   const activeProjectId = cookies().get("activeProject")?.value;
   if (!activeProjectId) return null;
-  const project = await getProjectById(Number(activeProjectId));
+  const project = await getProjectByIdDB(Number(activeProjectId));
   return project as Project;
+}
+
+export async function getProjects() {
+  return await getAllProjects();
+}
+
+export async function getProjectById(projectId: number) {
+  return await getProjectByIdDB(projectId);
 }
 
 export async function createProject(project: Project) {
@@ -159,16 +167,18 @@ export async function removeProject() {
   await saveCookie("activeProject", "");
   redirect("/");
 }
-
-export async function getProjects() {
-  return await getAllProjects();
-}
-
 export async function getStoriesByProjectId(projectId: number | undefined) {
   if (projectId === undefined) {
     return;
   }
   return (await getStoriesByProjectIdDB(projectId)) as Story[];
+}
+
+export async function getStoryById(storyId: number | undefined) {
+  if (storyId === undefined) {
+    return;
+  }
+  return (await getStoryByIdDB(storyId)) as Story;
 }
 
 export async function createStory(story: Story) {
@@ -211,8 +221,6 @@ export async function editStory(
 ) {
   if (!editedStoryId) return;
   const fetchStory = await getStoryById(editedStoryId);
-  console.log(fetchStory);
-  console.log(story);
   if (!fetchStory) return;
   if (
     fetchStory.name != story.name ||
