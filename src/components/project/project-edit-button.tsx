@@ -12,7 +12,7 @@ import {
 } from "../ui/dialog";
 import { editProject } from "~/lib/actions";
 import { useState } from "react";
-import { type Project } from "~/app/models";
+import { type Project } from "~/models";
 
 export default function ProjectEditButton({
   currentProject,

@@ -1,6 +1,6 @@
 "use client";
 
-import { type Project } from "~/app/models";
+import { type Project } from "~/models";
 import {
   Select,
   SelectContent,

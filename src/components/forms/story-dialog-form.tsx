@@ -14,7 +14,7 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { type Story } from "~/app/models";
+import { type Story } from "~/models";
 import { type Dispatch, type SetStateAction } from "react";
 import {
   Select,

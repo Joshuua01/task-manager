@@ -17,7 +17,7 @@ import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type Project, type EncryptedUser, type Story } from "~/app/models";
+import { type Project, type EncryptedUser, type Story } from "~/models";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
