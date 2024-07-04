@@ -14,7 +14,7 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { type Project } from "~/app/models";
+import { type Project } from "~/models/";
 import { type Dispatch, type SetStateAction } from "react";
 
 interface ProjectDialogFormProps {
