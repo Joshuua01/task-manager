@@ -1,16 +1,9 @@
 "use client";
-import React, { startTransition, useState } from "react";
-import { deleteStory, editStory, getStoryById } from "~/lib/actions";
-import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { startTransition, useState } from "react";
+import { deleteStory, editStory } from "~/lib/actions";
 import { Project, Story } from "~/models";
 import StoryDialogForm from "../forms/story-dialog-form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-} from "../ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,8 +15,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { revalidatePath } from "next/cache";
-import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "../ui/dialog";
 
 interface StoryPageHeaderProps {
   project: Project;
@@ -41,11 +40,17 @@ const StoryPageHeader = ({ project, story }: StoryPageHeaderProps) => {
   };
 
   return (
-    <div className="flex justify-between border-b border-border px-10 py-5">
-      <div className="flex items-end gap-2">
-        <h1 className="text-2xl font-semibold">{project?.name + " /"} </h1>
-        <h2 className="text-xl font-normal"> Story-{story?.id}</h2>
+    <div className="flex items-center justify-between border-b border-border px-10 py-5">
+      <div>
+        <div className="flex items-end gap-2">
+          <h3 className="spacing text-lg font-light">
+            {" "}
+            {project?.name} / Story-{story?.id}
+          </h3>
+        </div>
+        <h1 className="text-2xl font-semibold">{story.name}</h1>
       </div>
+
       <div className="flex gap-3">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>

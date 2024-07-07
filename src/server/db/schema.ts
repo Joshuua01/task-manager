@@ -29,13 +29,13 @@ export const users = createTable("users", {
 export const projects = createTable("projects", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 256 }).notNull().unique(),
-  description: varchar("description", { length: 256 }).notNull(),
+  description: varchar("description", { length: 1024 }).notNull(),
 });
 
 export const stories = createTable("stories", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 256 }).notNull(),
-  description: varchar("description", { length: 256 }).notNull(),
+  description: varchar("description", { length: 1024 }).notNull(),
   priority: priorityEnum("priority").notNull().default("medium"),
   status: statusEnum("status").notNull().default("to do"),
   creationDate: timestamp("creation_date").notNull().defaultNow(),
@@ -46,7 +46,7 @@ export const stories = createTable("stories", {
 export const tasks = createTable("tasks", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 256 }).notNull(),
-  description: varchar("description", { length: 256 }).notNull(),
+  description: varchar("description", { length: 1024 }).notNull(),
   priority: priorityEnum("priority").notNull().default("medium"),
   status: statusEnum("status").notNull().default("to do"),
   expectedTime: integer("expected_time").notNull(),

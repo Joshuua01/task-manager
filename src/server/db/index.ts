@@ -14,6 +14,12 @@ export const getUserByLogin = async (login: string) => {
   });
 };
 
+export const getUserById = async (id: number) => {
+  return await db.query.users.findFirst({
+    where: eq(schema.users.id, id),
+  });
+};
+
 export const getAllProjects = async () => {
   return await db.query.projects.findMany();
 };

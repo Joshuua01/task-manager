@@ -5,6 +5,7 @@ import {
   getAllProjects,
   getProjectById as getProjectByIdDB,
   getUserByLogin,
+  getUserById as getUserByIdDB,
   editProject as editProjectDB,
   getStoriesByProjectId as getStoriesByProjectIdDB,
   createStory as createStoryDB,
@@ -113,6 +114,10 @@ export async function saveCookie(name: string, value: string) {
   });
 }
 
+export async function getUserById(userId: number) {
+  return await getUserByIdDB(userId);
+}
+
 export async function getActiveProject() {
   const activeProjectId = cookies().get("activeProject")?.value;
   if (!activeProjectId) return null;
@@ -167,6 +172,7 @@ export async function removeProject() {
   await saveCookie("activeProject", "");
   redirect("/");
 }
+
 export async function getStoriesByProjectId(projectId: number | undefined) {
   if (projectId === undefined) {
     return;
