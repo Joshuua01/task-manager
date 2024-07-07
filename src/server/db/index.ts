@@ -9,6 +9,9 @@ import { type Story, type Project, Task } from "~/models";
 export const db = drizzle(sql, { schema });
 
 // USER
+export const getUsers = async () => {
+  return await db.query.users.findMany();
+};
 
 export const getUserByLogin = async (login: string) => {
   return await db.query.users.findFirst({

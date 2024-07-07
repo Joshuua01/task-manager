@@ -47,11 +47,13 @@ export default function TaskDialogForm({
       description: editedTask?.description ?? "",
       priority: editedTask?.priority ?? "medium",
       status: editedTask?.status ?? "to do",
+      expectedTime: editedTask?.expectedTime ?? 0,
     },
   });
 
   async function onSubmit(data: z.infer<typeof TaskSchema>) {
     let result = undefined;
+    data.id = editedTask?.id;
     if (editedTask?.id) {
       result = await submitAction(data as Task, editedTask?.id);
     } else {
@@ -68,7 +70,6 @@ export default function TaskDialogForm({
       setDialogOpen(false);
     }
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

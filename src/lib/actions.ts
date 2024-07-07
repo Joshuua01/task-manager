@@ -4,6 +4,7 @@ import {
   deleteProject,
   getAllProjects,
   getProjectById as getProjectByIdDB,
+  getUsers as getUsersDB,
   getUserByLogin,
   getUserById as getUserByIdDB,
   editProject as editProjectDB,
@@ -121,6 +122,10 @@ export async function saveCookie(name: string, value: string) {
 
 export async function getUserById(userId: number) {
   return await getUserByIdDB(userId);
+}
+
+export async function getUsers() {
+  return await getUsersDB();
 }
 
 export async function getActiveProject() {
@@ -283,13 +288,17 @@ export const editTask = async (task: Task) => {
   if (
     fetchTask.name != task.name ||
     fetchTask.description != task.description ||
-    fetchTask.status != task.status
+    fetchTask.status != task.status ||
+    fetchTask.priority != task.priority ||
+    fetchTask.expectedTime != task.expectedTime ||
+    fetchTask.assigneeId != task.assigneeId
   ) {
     await editTaskDB(task.id, task);
-    revalidatePath(`/story/${task.storyId}`);
+    revalidatePath(`/task/${task.id}`);
   } else {
     return {
       error: "Values cannot be the same",
     };
   }
+  revalidatePath(`/task/${task.id}`);
 };

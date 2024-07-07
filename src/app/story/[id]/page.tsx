@@ -39,7 +39,7 @@ export default async function StoryPage({
   return (
     <>
       <StoryPageHeader story={story} project={project} />
-      <div className="grid h-full grid-cols-3 px-10 py-5">
+      <div className="grid h-full grid-cols-3 px-10">
         <div className="col-span-2 p-5">
           <Accordion
             type="multiple"
