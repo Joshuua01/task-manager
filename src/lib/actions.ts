@@ -12,13 +12,18 @@ import {
   deleteStory as deleteStoryDB,
   editStory as editStoryDB,
   getStoryById as getStoryByIdDB,
+  getTaskById as getTaskByIdDB,
+  getTasksByStoryId as getTasksByStoryIdDB,
+  createTask as createTaskDB,
+  deleteTask as deleteTaskDB,
+  editTask as editTaskDB,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type Project, type EncryptedUser, type Story } from "~/models";
+import { type Project, type EncryptedUser, type Story, Task } from "~/models";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
@@ -242,3 +247,49 @@ export async function editStory(
     };
   }
 }
+
+export const getTaskById = async (id: number) => {
+  return await getTaskByIdDB(id);
+};
+
+export const getTasksByStoryId = async (storyId: number) => {
+  return await getTasksByStoryIdDB(storyId);
+};
+
+export const createTask = async (task: Task) => {
+  const tasks = await getTasksByStoryId(task.storyId);
+  if (tasks?.some((t) => t.name === task.name)) {
+    return {
+      error: "Task with this name already exists",
+    };
+  }
+  const currentUser = await getUserFromToken();
+  if (!currentUser) return;
+  task.ownerId = currentUser?.id;
+  await createTaskDB(task);
+  revalidatePath(`/story/${task.storyId}`);
+};
+
+export const deleteTask = async (taskId: number) => {
+  const task = await getTaskById(taskId);
+  if (!task) return;
+  await deleteTaskDB(taskId);
+  revalidatePath(`/story/${task.storyId}`);
+};
+
+export const editTask = async (task: Task) => {
+  const fetchTask = await getTaskById(task.id);
+  if (!fetchTask) return;
+  if (
+    fetchTask.name != task.name ||
+    fetchTask.description != task.description ||
+    fetchTask.status != task.status
+  ) {
+    await editTaskDB(task.id, task);
+    revalidatePath(`/story/${task.storyId}`);
+  } else {
+    return {
+      error: "Values cannot be the same",
+    };
+  }
+};

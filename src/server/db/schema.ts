@@ -55,7 +55,7 @@ export const tasks = createTable("tasks", {
   endDate: timestamp("end_date"),
   storyId: integer("story_id").notNull(),
   ownerId: integer("owner_id").notNull(),
-  assigneeId: integer("assignee_id").notNull(),
+  assigneeId: integer("assignee_id"),
 });
 
 const usersRelations = relations(users, ({ many }) => ({

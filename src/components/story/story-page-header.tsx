@@ -23,6 +23,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "../ui/dialog";
+import AddTaskButton from "../tasks/add-task-button";
 
 interface StoryPageHeaderProps {
   project: Project;
@@ -52,6 +53,7 @@ const StoryPageHeader = ({ project, story }: StoryPageHeaderProps) => {
       </div>
 
       <div className="flex gap-3">
+        <AddTaskButton storyId={story.id} />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button variant={"outline"}>Edit</Button>
