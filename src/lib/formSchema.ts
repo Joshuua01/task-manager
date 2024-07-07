@@ -19,6 +19,7 @@ export const CreateProjectSchema = z.object({
 });
 
 export const StorySchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(1, {
     message: "Please enter a name for your story!",
   }),
@@ -27,4 +28,28 @@ export const StorySchema = z.object({
   }),
   priority: z.enum(["low", "medium", "high"]).default("medium"),
   status: z.enum(["to do", "in progress", "done"]).default("to do"),
+  creationDate: z.date().optional(),
+  projectId: z.number().optional(),
+  ownerId: z.number().optional(),
+});
+
+export const TaskSchema = z.object({
+  id: z.number().optional(),
+  name: z.string().min(1, {
+    message: "Please enter a name for your task!",
+  }),
+  description: z.string().min(1, {
+    message: "Please enter a description for your task!",
+  }),
+  priority: z.enum(["low", "medium", "high"]).default("medium"),
+  status: z.enum(["to do", "in progress", "done"]).default("to do"),
+  expectedTime: z.coerce.number().int().min(1, {
+    message: "Please enter a valid number of days!",
+  }),
+  creationDate: z.date().optional(),
+  startDate: z.date().nullable().optional(),
+  endDate: z.date().nullable().optional(),
+  storyId: z.number().optional(),
+  ownerId: z.number().optional(),
+  assigneeId: z.number().optional(),
 });

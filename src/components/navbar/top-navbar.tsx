@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { getActiveProject, getProjects, getUserFromToken } from "~/lib/actions";
 import { ThemeToggle } from "../ThemeToggle";
 import ProjectSelect from "./project-select";
-import { type Project } from "~/app/models";
+import { type Project } from "~/models";
 import ProfileDropdown from "./profile-dropdown";
 import AddProjectButton from "./add-project-button";
 import RemoveProjectButton from "./remove-project-button";

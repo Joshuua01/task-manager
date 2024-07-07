@@ -20,7 +20,6 @@ export default async function HomePage() {
           <TabsList>
             <TabsTrigger value="stories">Stories</TabsTrigger>
             <TabsTrigger value="tasks">Assigned Tasks</TabsTrigger>
-            <TabsTrigger value="kanban">Kanban</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="stories">
@@ -28,9 +27,6 @@ export default async function HomePage() {
         </TabsContent>
         <TabsContent value="tasks">
           <div>tasks</div>
-        </TabsContent>
-        <TabsContent value="kanban">
-          <div>kanban</div>
         </TabsContent>
       </Tabs>
     </div>

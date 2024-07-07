@@ -1,10 +1,9 @@
-import { type Column } from "@tanstack/react-table";
 import {
-  CaretUpIcon,
   CaretDownIcon,
   CaretSortIcon,
+  CaretUpIcon,
 } from "@radix-ui/react-icons";
-import { Button } from "../ui/button";
+import { type Column } from "@tanstack/react-table";
 
 interface DataTableColHeaderProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -16,12 +15,11 @@ export default function DataTableColHeader<TData, TValue>({
   title,
 }: DataTableColHeaderProps<TData, TValue>) {
   return (
-    <div className="w-[50px]">
-      <Button
-        variant={"ghost"}
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center gap-2 text-sm"
-      >
+    <div
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      className="flex items-center justify-start"
+    >
+      <div className="flex cursor-pointer items-center justify-start gap-1 transition-colors duration-150 hover:text-primary">
         {title}
         {column.getIsSorted() === "desc" ? (
           <CaretUpIcon />
@@ -30,7 +28,7 @@ export default function DataTableColHeader<TData, TValue>({
         ) : (
           <CaretSortIcon />
         )}
-      </Button>
+      </div>
     </div>
   );
 }

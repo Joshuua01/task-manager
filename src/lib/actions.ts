@@ -3,21 +3,28 @@ import {
   addProject,
   deleteProject,
   getAllProjects,
-  getProjectById,
+  getProjectById as getProjectByIdDB,
+  getUsers as getUsersDB,
   getUserByLogin,
+  getUserById as getUserByIdDB,
   editProject as editProjectDB,
   getStoriesByProjectId as getStoriesByProjectIdDB,
   createStory as createStoryDB,
   deleteStory as deleteStoryDB,
   editStory as editStoryDB,
-  getStoryById,
+  getStoryById as getStoryByIdDB,
+  getTaskById as getTaskByIdDB,
+  getTasksByStoryId as getTasksByStoryIdDB,
+  createTask as createTaskDB,
+  deleteTask as deleteTaskDB,
+  editTask as editTaskDB,
 } from "~/server/db";
 import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { type Project, type EncryptedUser, type Story } from "~/app/models";
+import { type Project, type EncryptedUser, type Story, Task } from "~/models";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
@@ -113,11 +120,27 @@ export async function saveCookie(name: string, value: string) {
   });
 }
 
+export async function getUserById(userId: number) {
+  return await getUserByIdDB(userId);
+}
+
+export async function getUsers() {
+  return await getUsersDB();
+}
+
 export async function getActiveProject() {
   const activeProjectId = cookies().get("activeProject")?.value;
   if (!activeProjectId) return null;
-  const project = await getProjectById(Number(activeProjectId));
+  const project = await getProjectByIdDB(Number(activeProjectId));
   return project as Project;
+}
+
+export async function getProjects() {
+  return await getAllProjects();
+}
+
+export async function getProjectById(projectId: number) {
+  return await getProjectByIdDB(projectId);
 }
 
 export async function createProject(project: Project) {
@@ -160,15 +183,18 @@ export async function removeProject() {
   redirect("/");
 }
 
-export async function getProjects() {
-  return await getAllProjects();
-}
-
 export async function getStoriesByProjectId(projectId: number | undefined) {
   if (projectId === undefined) {
     return;
   }
   return (await getStoriesByProjectIdDB(projectId)) as Story[];
+}
+
+export async function getStoryById(storyId: number | undefined) {
+  if (storyId === undefined) {
+    return;
+  }
+  return (await getStoryByIdDB(storyId)) as Story;
 }
 
 export async function createStory(story: Story) {
@@ -211,8 +237,6 @@ export async function editStory(
 ) {
   if (!editedStoryId) return;
   const fetchStory = await getStoryById(editedStoryId);
-  console.log(fetchStory);
-  console.log(story);
   if (!fetchStory) return;
   if (
     fetchStory.name != story.name ||
@@ -228,3 +252,53 @@ export async function editStory(
     };
   }
 }
+
+export const getTaskById = async (id: number) => {
+  return await getTaskByIdDB(id);
+};
+
+export const getTasksByStoryId = async (storyId: number) => {
+  return await getTasksByStoryIdDB(storyId);
+};
+
+export const createTask = async (task: Task) => {
+  const tasks = await getTasksByStoryId(task.storyId);
+  if (tasks?.some((t) => t.name === task.name)) {
+    return {
+      error: "Task with this name already exists",
+    };
+  }
+  const currentUser = await getUserFromToken();
+  if (!currentUser) return;
+  task.ownerId = currentUser?.id;
+  await createTaskDB(task);
+  revalidatePath(`/story/${task.storyId}`);
+};
+
+export const deleteTask = async (taskId: number) => {
+  const task = await getTaskById(taskId);
+  if (!task) return;
+  await deleteTaskDB(taskId);
+  revalidatePath(`/story/${task.storyId}`);
+};
+
+export const editTask = async (task: Task) => {
+  const fetchTask = await getTaskById(task.id);
+  if (!fetchTask) return;
+  if (
+    fetchTask.name != task.name ||
+    fetchTask.description != task.description ||
+    fetchTask.status != task.status ||
+    fetchTask.priority != task.priority ||
+    fetchTask.expectedTime != task.expectedTime ||
+    fetchTask.assigneeId != task.assigneeId
+  ) {
+    await editTaskDB(task.id, task);
+    revalidatePath(`/task/${task.id}`);
+  } else {
+    return {
+      error: "Values cannot be the same",
+    };
+  }
+  revalidatePath(`/task/${task.id}`);
+};

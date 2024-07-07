@@ -23,6 +23,7 @@ import {
 import { useState } from "react";
 import DataTableHeader from "./data-table-header";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,12 +37,13 @@ export default function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([
     { id: "id", desc: false },
   ]);
-
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 6,
   });
+
+  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -72,7 +74,11 @@ export default function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      style={{ width: header.getSize() }}
+                      className="px-3"
+                      style={{
+                        minWidth: header.column.columnDef.size,
+                        maxWidth: header.column.columnDef.size,
+                      }}
                     >
                       {header.isPlaceholder
                         ? null
@@ -95,7 +101,7 @@ export default function DataTable<TData, TValue>({
                   className="border-border"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="p-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

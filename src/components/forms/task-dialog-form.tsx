@@ -1,9 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
-import { StorySchema } from "~/lib/formSchema";
+import { TaskSchema } from "~/lib/formSchema";
+import { Task } from "~/models";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -12,10 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { type Story } from "~/models";
-import { type Dispatch, type SetStateAction } from "react";
 import {
   Select,
   SelectContent,
@@ -24,36 +24,41 @@ import {
   SelectValue,
 } from "../ui/select";
 
-interface StoryDialogFormProps {
-  editedStory?: Story;
+interface TaskDialogFormProps {
+  editedTask?: Task;
   submitAction: (
-    payload: Story,
+    payload: Task,
     id?: number,
   ) => Promise<{ error?: string } | undefined>;
   setDialogOpen: Dispatch<SetStateAction<boolean>>;
+  storyId?: number;
 }
 
-export default function StoryDialogForm({
-  editedStory,
+export default function TaskDialogForm({
+  editedTask,
   submitAction,
   setDialogOpen,
-}: StoryDialogFormProps) {
-  const form = useForm<z.infer<typeof StorySchema>>({
-    resolver: zodResolver(StorySchema),
+  storyId,
+}: TaskDialogFormProps) {
+  const form = useForm<z.infer<typeof TaskSchema>>({
+    resolver: zodResolver(TaskSchema),
     defaultValues: {
-      name: editedStory?.name ?? "",
-      description: editedStory?.description ?? "",
-      priority: editedStory?.priority ?? "medium",
-      status: editedStory?.status ?? "to do",
+      name: editedTask?.name ?? "",
+      description: editedTask?.description ?? "",
+      priority: editedTask?.priority ?? "medium",
+      status: editedTask?.status ?? "to do",
+      expectedTime: editedTask?.expectedTime ?? 0,
     },
   });
 
-  async function onSubmit(data: z.infer<typeof StorySchema>) {
+  async function onSubmit(data: z.infer<typeof TaskSchema>) {
     let result = undefined;
-    if (editedStory?.id) {
-      result = await submitAction(data as Story, editedStory?.id);
+    data.id = editedTask?.id;
+    if (editedTask?.id) {
+      result = await submitAction(data as Task, editedTask?.id);
     } else {
-      result = await submitAction(data as Story);
+      data.storyId = storyId;
+      result = await submitAction(data as Task);
     }
     if (result?.error) {
       form.setError("root", {
@@ -65,7 +70,6 @@ export default function StoryDialogForm({
       setDialogOpen(false);
     }
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -76,7 +80,7 @@ export default function StoryDialogForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your name..." {...field} />
+                <Input placeholder="Enter name..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -89,7 +93,7 @@ export default function StoryDialogForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your description..." {...field} />
+                <Input placeholder="Enter description..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -146,9 +150,22 @@ export default function StoryDialogForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="expectedTime"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estimated time in days</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="Enter days..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit" className="w-full">
-          {editedStory ? "Edit story" : "Add story"}
+          {editedTask ? "Edit task" : "Add task"}
         </Button>
         {form.formState.errors.root && (
           <p className="w-full text-center font-semibold text-destructive">

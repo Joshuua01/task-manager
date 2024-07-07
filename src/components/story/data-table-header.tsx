@@ -2,7 +2,7 @@ import { type Table } from "@tanstack/react-table";
 import { Input } from "../ui/input";
 import DataTableFilter from "./data-table-filter";
 import AddStoryButton from "./add-story-button";
-import { priorities, statuses } from "~/app/models";
+import { priorities, statuses } from "~/models";
 
 interface DataTableHeaderProps<TData> {
   table: Table<TData>;

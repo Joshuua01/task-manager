@@ -4,10 +4,11 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { type Story } from "~/app/models";
+import { type Story } from "~/models";
 import { creationDateString, prioritySort, statusSort } from "~/lib/utils";
 import { DataTableOptions } from "./data-table-options";
 import DataTableColHeader from "./data-table-col-header";
+import Link from "next/link";
 
 export const columns: ColumnDef<Story>[] = [
   {
@@ -15,13 +16,21 @@ export const columns: ColumnDef<Story>[] = [
     header: ({ column }) => {
       return <DataTableColHeader title="Id" column={column} />;
     },
-    size: 50,
+    size: 75,
   },
   {
     accessorKey: "name",
     header: ({ column }) => {
       return <DataTableColHeader title="Name" column={column} />;
     },
+    cell: ({ row }) => {
+      return (
+        <span className={"cursor-pointer"}>
+          <Link href={`/story/${row.original.id}`}>{row.getValue("name")}</Link>
+        </span>
+      );
+    },
+    size: 250,
   },
   {
     accessorKey: "priority",
@@ -32,6 +41,7 @@ export const columns: ColumnDef<Story>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+    size: 150,
   },
   {
     accessorKey: "status",
@@ -42,6 +52,7 @@ export const columns: ColumnDef<Story>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+    size: 150,
   },
   {
     accessorKey: "creationDate",
@@ -52,6 +63,7 @@ export const columns: ColumnDef<Story>[] = [
       return creationDateString(row.getValue("creationDate"));
     },
     sortingFn: "datetime",
+    size: 150,
   },
   {
     id: "actions",

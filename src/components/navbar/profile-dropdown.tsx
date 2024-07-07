@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { type EncryptedUser } from "~/app/models";
+import { type EncryptedUser } from "~/models";
 
 export default function ProfileDropdown({ user }: { user: EncryptedUser }) {
   return (
