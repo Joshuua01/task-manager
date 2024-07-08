@@ -95,6 +95,12 @@ export const getTasksByStoryId = async (storyId: number) => {
   });
 };
 
+export const getTasksByUserId = async (userId: number) => {
+  return await db.query.tasks.findMany({
+    where: eq(schema.tasks.assigneeId, userId),
+  });
+};
+
 export const createTask = async (task: Task) => {
   return await db.insert(schema.tasks).values(task);
 };

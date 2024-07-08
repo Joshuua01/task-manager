@@ -15,6 +15,7 @@ import {
   getStoryById as getStoryByIdDB,
   getTaskById as getTaskByIdDB,
   getTasksByStoryId as getTasksByStoryIdDB,
+  getTasksByUserId as getTasksByUserIdDB,
   createTask as createTaskDB,
   deleteTask as deleteTaskDB,
   editTask as editTaskDB,
@@ -259,6 +260,10 @@ export const getTaskById = async (id: number) => {
 
 export const getTasksByStoryId = async (storyId: number) => {
   return await getTasksByStoryIdDB(storyId);
+};
+
+export const getTasksByUserId = async (userId: number) => {
+  return (await getTasksByUserIdDB(userId)) as Task[];
 };
 
 export const createTask = async (task: Task) => {
