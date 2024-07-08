@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 
 import * as schema from "./schema";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { type Story, type Project, Task } from "~/models";
 
 // Use this object to send drizzle queries to your DB
@@ -93,6 +93,22 @@ export const getTasksByStoryId = async (storyId: number) => {
   return await db.query.tasks.findMany({
     where: eq(schema.tasks.storyId, storyId),
   });
+};
+
+export const getTasksByProjectId = async (projectId: number) => {
+  const projectStories = await db.query.stories.findMany({
+    where: eq(schema.stories.projectId, projectId),
+  });
+  const storyIds = projectStories.map((story) => story.id);
+
+  if (storyIds.length === 0) {
+    return [];
+  }
+  const projectTasks = await db.query.tasks.findMany({
+    where: inArray(schema.tasks.storyId, storyIds),
+  });
+
+  return projectTasks;
 };
 
 export const getTasksByUserId = async (userId: number) => {

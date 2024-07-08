@@ -1,11 +1,15 @@
+import Kanban from "~/components/kanban/kanban";
 import StoriesCard from "~/components/story/stories-card";
 import TasksCard from "~/components/tasks/tasks-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getActiveProject, getUserFromToken } from "~/lib/actions";
+import { getTasksByProjectId } from "~/server/db";
 
 export default async function HomePage() {
   const user = await getUserFromToken();
   const activeProject = await getActiveProject();
+  if (!activeProject) return;
+  const tasks = await getTasksByProjectId(activeProject.id);
 
   return (
     <div className="flex h-full w-full flex-col bg-background px-10 py-5">
@@ -31,7 +35,7 @@ export default async function HomePage() {
           <TasksCard />
         </TabsContent>
         <TabsContent value="kanban">
-          <div>kanban</div>
+          <Kanban tasks={tasks} />
         </TabsContent>
       </Tabs>
     </div>

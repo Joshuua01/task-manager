@@ -300,10 +300,10 @@ export const editTask = async (task: Task) => {
   ) {
     await editTaskDB(task.id, task);
     revalidatePath(`/task/${task.id}`);
+    revalidatePath("/");
   } else {
     return {
       error: "Values cannot be the same",
     };
   }
-  revalidatePath(`/task/${task.id}`);
 };
