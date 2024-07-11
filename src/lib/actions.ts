@@ -1,33 +1,35 @@
 "use server";
+import { jwtVerify, SignJWT } from "jose";
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
+import { type z } from "zod";
+import { type EncryptedUser, type Project, type Story, Task } from "~/models";
 import {
   addProject,
+  createStory as createStoryDB,
+  createTask as createTaskDB,
   deleteProject,
+  deleteStory as deleteStoryDB,
+  deleteTask as deleteTaskDB,
+  editProject as editProjectDB,
+  editStory as editStoryDB,
+  editTask as editTaskDB,
   getAllProjects,
   getProjectById as getProjectByIdDB,
-  getUsers as getUsersDB,
-  getUserByLogin,
-  getUserById as getUserByIdDB,
-  editProject as editProjectDB,
   getStoriesByProjectId as getStoriesByProjectIdDB,
-  createStory as createStoryDB,
-  deleteStory as deleteStoryDB,
-  editStory as editStoryDB,
   getStoryById as getStoryByIdDB,
   getTaskById as getTaskByIdDB,
   getTasksByStoryId as getTasksByStoryIdDB,
   getTasksByUserId as getTasksByUserIdDB,
-  createTask as createTaskDB,
-  deleteTask as deleteTaskDB,
-  editTask as editTaskDB,
+  getUserById as getUserByIdDB,
+  getUserByLogin,
+  getUsers as getUsersDB,
 } from "~/server/db";
-import { type z } from "zod";
 import { type LoginSchema } from "./formSchema";
-import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { type Project, type EncryptedUser, type Story, Task } from "~/models";
-import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+
+import { notifyTaskAssignment } from "./notifications";
 
 const secret = process.env.JWT_SECRET;
 const key = new TextEncoder().encode(secret);
@@ -299,6 +301,9 @@ export const editTask = async (task: Task) => {
     fetchTask.assigneeId != task.assigneeId
   ) {
     await editTaskDB(task.id, task);
+    if (fetchTask.assigneeId !== task.assigneeId) {
+      notifyTaskAssignment(task);
+    }
     revalidatePath(`/task/${task.id}`);
     revalidatePath("/");
   } else {

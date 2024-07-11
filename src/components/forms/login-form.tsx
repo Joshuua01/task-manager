@@ -15,6 +15,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { login } from "~/lib/actions";
+import { Loader2 } from "lucide-react";
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -70,7 +71,11 @@ export default function LoginForm() {
           )}
         />
         <Button type="submit" className="w-full">
-          Login
+          {form.formState.isSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            "Login"
+          )}
         </Button>
         {form.formState.errors.root && (
           <p className="w-full text-center font-semibold text-destructive">
