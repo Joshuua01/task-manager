@@ -1,9 +1,11 @@
 "use client";
 
+import { handleEnd } from "@formkit/drag-and-drop";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
-import { handleDragstart, handleEnd } from "@formkit/drag-and-drop";
-import { statusEnum, Task } from "~/models";
+import Link from "next/link";
 import { editTask } from "~/lib/actions";
+import { capitalizeFirstLetter } from "~/lib/utils";
+import { statusEnum, Task } from "~/models";
 
 export default function Kanban({ tasks }: { tasks: Task[] }) {
   const todoItems = tasks.filter((task) => task.status === "to do") || [];
@@ -14,7 +16,10 @@ export default function Kanban({ tasks }: { tasks: Task[] }) {
   const updateTask = async (task: Task, newStatus: string | null) => {
     if (!newStatus) return;
     if (task.status === newStatus) return;
-    const newTask = { ...task, status: newStatus };
+    const newTask = {
+      ...task,
+      status: newStatus as "to do" | "in progress" | "done",
+    };
     await editTask(newTask);
   };
 
@@ -53,37 +58,58 @@ export default function Kanban({ tasks }: { tasks: Task[] }) {
     },
   });
   return (
-    <div className="flex">
+    <div className="flex h-[700px] w-full justify-center gap-24  p-10">
       <ul
         ref={todoList}
-        className="w-[150px] bg-red-300"
+        className="relative w-[350px] overflow-y-auto rounded-xl border-2 border-border bg-background px-4 pt-8 before:absolute before:left-0 before:top-0.5 before:flex before:h-6 before:w-full before:items-center before:justify-center before:text-xl before:font-semibold before:uppercase before:content-[attr(aria-label)]"
         aria-label={statusEnum[0]}
       >
         {todos.map((todo) => (
-          <li className="kanban-item" key={todo.id}>
-            {todo.name}
+          <li
+            className="mt-3 flex h-32 flex-col items-start gap-2 rounded-xl border-2 border-border bg-background p-3 transition-colors duration-100 ease-in-out first:mt-0 hover:bg-border"
+            key={todo.id}
+          >
+            <Link href={`/task/${todo.id}`} className="hover:underline">
+              <div className="font-semibold">TASK-{todo.id}</div>
+            </Link>
+            <div>{todo.name}</div>
+            <div>{capitalizeFirstLetter(todo.priority)}</div>
           </li>
         ))}
       </ul>
       <ul
         ref={inProgressList}
-        className="w-[150px] bg-red-500"
+        className="relative w-[350px] overflow-y-auto rounded-xl border-2 border-border bg-background px-4 pt-8 before:absolute before:left-0 before:top-0.5 before:flex before:h-6 before:w-full before:items-center before:justify-center before:text-xl before:font-semibold before:uppercase  before:content-[attr(aria-label)]"
         aria-label={statusEnum[1]}
       >
         {inProgress.map((inProgres) => (
-          <li className="kanban-item" key={inProgres.id}>
-            {inProgres.name}
+          <li
+            className="mt-3 flex h-32 flex-col items-start gap-2 rounded-xl border-2 border-border bg-background p-3 transition-colors duration-100 ease-in-out first:mt-0 hover:bg-border"
+            key={inProgres.id}
+          >
+            <Link href={`/task/${inProgres.id}`} className="hover:underline">
+              <div className="font-semibold">TASK-{inProgres.id}</div>
+            </Link>
+            <div>{inProgres.name}</div>
+            <div>{capitalizeFirstLetter(inProgres.priority)}</div>
           </li>
         ))}
       </ul>
       <ul
         ref={doneList}
-        className="w-[150px] bg-red-800"
+        className="relative w-[350px] overflow-y-auto rounded-xl border-2 border-border bg-background px-4 pt-8 before:absolute before:left-0 before:top-0.5 before:flex before:h-6 before:w-full before:items-center before:justify-center before:text-xl before:font-semibold before:uppercase  before:content-[attr(aria-label)]"
         aria-label={statusEnum[2]}
       >
         {dones.map((done) => (
-          <li className="kanban-item" key={done.id}>
-            {done.name}
+          <li
+            className="mt-3 flex h-32 flex-col items-start gap-2 rounded-xl border-2 border-border bg-background p-3 transition-colors duration-100 ease-in-out first:mt-0 hover:bg-border"
+            key={done.id}
+          >
+            <Link href={`/task/${done.id}`} className="hover:underline">
+              <div className="font-semibold">TASK-{done.id}</div>
+            </Link>
+            <div>{done.name}</div>
+            <div>{capitalizeFirstLetter(done.priority)}</div>
           </li>
         ))}
       </ul>

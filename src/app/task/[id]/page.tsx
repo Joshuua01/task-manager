@@ -18,7 +18,7 @@ import { capitalizeFirstLetter } from "~/lib/utils";
 
 export default async function TaskPage({ params }: { params: { id: string } }) {
   const id = Number(params.id);
-  const users = await getUsers();
+  const users = (await getUsers()).filter((user) => user.role !== "admin");
   const task = await getTaskById(id);
   if (!task) return null;
   const story = await getStoryById(task.storyId);

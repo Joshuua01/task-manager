@@ -122,27 +122,6 @@ const TaskPageHeader = ({
       </div>
       <div className="flex gap-20">
         <div className="flex gap-3">
-          <Select
-            onValueChange={handleTaskAssign}
-            value={task.assigneeId ? task.assigneeId.toString() : undefined}
-          >
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Assign user" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={"null"}>Unassign</SelectItem>
-              {users.map((user) => (
-                <SelectItem key={user.id} value={user.id.toString()}>
-                  {user.name + " " + user.surname}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button variant={"outline"} onClick={handleAssignToMeButton}>
-            Assign to me
-          </Button>
-        </div>
-        <div className="flex gap-3">
           {task.status === statusEnum[0] ? (
             <Button
               variant={"outline"}
@@ -182,6 +161,28 @@ const TaskPageHeader = ({
             </Button>
           )}
         </div>
+        <div className="flex gap-3">
+          <Select
+            onValueChange={handleTaskAssign}
+            value={task.assigneeId ? task.assigneeId.toString() : undefined}
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Assign user" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"null"}>Unassign</SelectItem>
+              {users.map((user) => (
+                <SelectItem key={user.id} value={user.id.toString()}>
+                  {user.name + " " + user.surname}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button variant={"outline"} onClick={handleAssignToMeButton}>
+            Assign to me
+          </Button>
+        </div>
+
         <div className="flex gap-3">
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
