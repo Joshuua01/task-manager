@@ -3,7 +3,7 @@ import { sql } from "@vercel/postgres";
 
 import * as schema from "./schema";
 import { eq, inArray } from "drizzle-orm";
-import { type Story, type Project, Task } from "~/models";
+import { type Story, type Project, Task, Notification } from "~/models";
 
 // Use this object to send drizzle queries to your DB
 export const db = drizzle(sql, { schema });
@@ -127,4 +127,31 @@ export const deleteTask = async (taskId: number) => {
 
 export const editTask = async (id: number, task: Task) => {
   return await db.update(schema.tasks).set(task).where(eq(schema.tasks.id, id));
+};
+
+export const addNotification = async (notification: Notification) => {
+  return await db.insert(schema.notifications).values(notification);
+};
+
+export const getNotificationsByUserId = async (userId: number) => {
+  return await db.query.notifications.findMany({
+    where: eq(schema.notifications.userId, userId),
+  });
+};
+
+export const changeNotificationStatus = async (notificationId: number) => {
+  const notification = await db.query.notifications.findFirst({
+    where: eq(schema.notifications.id, notificationId),
+  });
+  if (!notification) return;
+  return await db
+    .update(schema.notifications)
+    .set({ read: !notification.read })
+    .where(eq(schema.notifications.id, notificationId));
+};
+
+export const deleteNotification = async (notificationId: number) => {
+  return await db
+    .delete(schema.notifications)
+    .where(eq(schema.notifications.id, notificationId));
 };

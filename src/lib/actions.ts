@@ -5,7 +5,13 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { type z } from "zod";
-import { type EncryptedUser, type Project, type Story, Task } from "~/models";
+import {
+  type EncryptedUser,
+  Notification,
+  type Project,
+  type Story,
+  Task,
+} from "~/models";
 import {
   addProject,
   createStory as createStoryDB,
@@ -26,6 +32,9 @@ import {
   getUserById as getUserByIdDB,
   getUserByLogin,
   getUsers as getUsersDB,
+  addNotification as addNotificationDB,
+  getNotificationsByUserId as getNotificationsByUserIdDB,
+  deleteNotification as deleteNotificationDB,
 } from "~/server/db";
 import { type LoginSchema } from "./formSchema";
 
@@ -311,4 +320,16 @@ export const editTask = async (task: Task) => {
       error: "Values cannot be the same",
     };
   }
+};
+
+export const addNotification = async (notification: Notification) => {
+  await addNotificationDB(notification);
+};
+
+export const getNotificationsByUserId = async (userId: number) => {
+  return await getNotificationsByUserIdDB(userId);
+};
+
+export const deleteNotification = async (notificationId: number) => {
+  await deleteNotificationDB(notificationId);
 };

@@ -1,10 +1,17 @@
 import { type InferSelectModel } from "drizzle-orm";
-import { type stories, type projects, tasks, users } from "~/server/db/schema";
+import {
+  type stories,
+  type projects,
+  tasks,
+  users,
+  notifications,
+} from "~/server/db/schema";
 
 export type User = InferSelectModel<typeof users>;
 export type Project = InferSelectModel<typeof projects>;
 export type Story = InferSelectModel<typeof stories>;
 export type Task = InferSelectModel<typeof tasks>;
+export type Notification = InferSelectModel<typeof notifications>;
 
 export type EncryptedUser = {
   id: number;
