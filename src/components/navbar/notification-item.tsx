@@ -5,7 +5,6 @@ import { startTransition } from "react";
 import { deleteNotification } from "~/lib/actions";
 import { capitalizeFirstLetter } from "~/lib/utils";
 import { Notification } from "~/models";
-import { changeNotificationStatus } from "~/server/db";
 
 export default function NotificationItem({
   notification,

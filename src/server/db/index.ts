@@ -139,17 +139,6 @@ export const getNotificationsByUserId = async (userId: number) => {
   });
 };
 
-export const changeNotificationStatus = async (notificationId: number) => {
-  const notification = await db.query.notifications.findFirst({
-    where: eq(schema.notifications.id, notificationId),
-  });
-  if (!notification) return;
-  return await db
-    .update(schema.notifications)
-    .set({ read: !notification.read })
-    .where(eq(schema.notifications.id, notificationId));
-};
-
 export const deleteNotification = async (notificationId: number) => {
   return await db
     .delete(schema.notifications)
