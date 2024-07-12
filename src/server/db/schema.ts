@@ -2,6 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { relations } from "drizzle-orm";
+import { boolean } from "drizzle-orm/pg-core";
 import {
   integer,
   pgEnum,
@@ -10,6 +11,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { title } from "process";
 
 export const roleEnum = pgEnum("role", ["admin", "developer", "devops"]);
 export const priorityEnum = pgEnum("priority", ["low", "medium", "high"]);
@@ -58,9 +60,22 @@ export const tasks = createTable("tasks", {
   assigneeId: integer("assignee_id"),
 });
 
+export const notifications = createTable("notifications", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 256 }).notNull(),
+  message: varchar("message", { length: 1024 }).notNull(),
+  creationDate: timestamp("creation_date").notNull().defaultNow(),
+  priority: priorityEnum("priority").notNull().default("medium"),
+  userId: integer("user_id").notNull(),
+  taskId: integer("task_id").notNull(),
+});
+
+// RELATIONS
+
 const usersRelations = relations(users, ({ many }) => ({
   owner: many(stories, { relationName: "owner" }),
   asiggnee: many(stories, { relationName: "assignee" }),
+  notifications: many(notifications),
   tasks: many(tasks),
 }));
 
@@ -92,5 +107,17 @@ const tasksRelations = relations(tasks, ({ one, many }) => ({
   assignee: one(users, {
     fields: [tasks.assigneeId],
     references: [users.id],
+  }),
+  notifications: many(notifications),
+}));
+
+const notificationsRelations = relations(notifications, ({ one }) => ({
+  users: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+  tasks: one(tasks, {
+    fields: [notifications.taskId],
+    references: [tasks.id],
   }),
 }));

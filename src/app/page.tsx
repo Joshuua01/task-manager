@@ -8,7 +8,12 @@ import { getTasksByProjectId } from "~/server/db";
 export default async function HomePage() {
   const user = await getUserFromToken();
   const activeProject = await getActiveProject();
-  if (!activeProject) return;
+  if (!activeProject)
+    return (
+      <div className="flex h-full items-center justify-center text-3xl font-semibold">
+        Please select a project to continue.
+      </div>
+    );
   const tasks = await getTasksByProjectId(activeProject.id);
 
   return (

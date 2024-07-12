@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { startTransition, useState } from "react";
-import { editTask, getUserFromToken } from "~/lib/actions";
+import { startTransition, useState, useTransition } from "react";
+import { deleteTask, editTask, getUserFromToken } from "~/lib/actions";
 import {
   EncryptedUser,
   Project,
@@ -10,7 +10,6 @@ import {
   Story,
   Task,
 } from "~/models";
-import { deleteTask } from "~/server/db";
 import TaskDialogForm from "../forms/task-dialog-form";
 import {
   AlertDialog,
@@ -38,6 +37,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { roleEnum } from "~/server/db/schema";
+import { Loader2 } from "lucide-react";
 
 interface TaskPageHeaderProps {
   project: Project;
@@ -54,9 +55,10 @@ const TaskPageHeader = ({
 }: TaskPageHeaderProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const handleTaskDelete = () => {
     startTransition(async () => {
-      await deleteTask(Number(story.id));
+      await deleteTask(task.id);
     });
     router.replace(`/story/${story.id}`);
   };
@@ -72,6 +74,7 @@ const TaskPageHeader = ({
     startTransition(async () => {
       const currentUser = await getUserFromToken();
       if (!currentUser) return;
+      if (currentUser.role === "admin") return;
       await editTask({
         ...task,
         assigneeId: Number(currentUser?.id),
@@ -128,8 +131,13 @@ const TaskPageHeader = ({
               onClick={() => {
                 handleStatusChange(statusEnum[1]);
               }}
+              disabled={isPending}
             >
-              Start
+              {isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Start"
+              )}
             </Button>
           ) : task.status === statusEnum[1] ? (
             <>
@@ -138,16 +146,26 @@ const TaskPageHeader = ({
                 onClick={() => {
                   handleStatusChange(statusEnum[2]);
                 }}
+                disabled={isPending}
               >
-                Finish
+                {isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Finish"
+                )}
               </Button>
               <Button
                 variant={"outline"}
                 onClick={() => {
                   handleStatusChange(statusEnum[0]);
                 }}
+                disabled={isPending}
               >
-                To do
+                {isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "To do"
+                )}
               </Button>
             </>
           ) : (
@@ -156,8 +174,13 @@ const TaskPageHeader = ({
               onClick={() => {
                 handleStatusChange(statusEnum[0]);
               }}
+              disabled={isPending}
             >
-              Reopen
+              {isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Reopen"
+              )}
             </Button>
           )}
         </div>
@@ -165,6 +188,7 @@ const TaskPageHeader = ({
           <Select
             onValueChange={handleTaskAssign}
             value={task.assigneeId ? task.assigneeId.toString() : undefined}
+            disabled={isPending}
           >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Assign user" />
@@ -178,8 +202,17 @@ const TaskPageHeader = ({
               ))}
             </SelectContent>
           </Select>
-          <Button variant={"outline"} onClick={handleAssignToMeButton}>
-            Assign to me
+          <Button
+            variant={"outline"}
+            onClick={handleAssignToMeButton}
+            disabled={isPending}
+            className="w-[120px]"
+          >
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Assign to me"
+            )}
           </Button>
         </div>
 
@@ -213,7 +246,7 @@ const TaskPageHeader = ({
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleTaskDelete}>
-                  Continue
+                  Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

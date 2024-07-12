@@ -1,19 +1,26 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { getActiveProject, getProjects, getUserFromToken } from "~/lib/actions";
-import { ThemeToggle } from "../ThemeToggle";
-import ProjectSelect from "./project-select";
+import {
+  getActiveProject,
+  getNotificationsByUserId,
+  getProjects,
+  getUserFromToken,
+} from "~/lib/actions";
 import { type Project } from "~/models";
-import ProfileDropdown from "./profile-dropdown";
-import AddProjectButton from "./add-project-button";
-import RemoveProjectButton from "./remove-project-button";
 import ProjectEditButton from "../project/project-edit-button";
+import { ThemeToggle } from "../ThemeToggle";
 import { Separator } from "../ui/separator";
+import AddProjectButton from "./add-project-button";
+import NotificationDropdown from "./notification-dropdown";
+import ProfileDropdown from "./profile-dropdown";
+import ProjectSelect from "./project-select";
+import RemoveProjectButton from "./remove-project-button";
 
 export default async function TopNavbar() {
   const projects: Project[] = await getProjects();
   const user = await getUserFromToken();
   const activeProject = await getActiveProject();
+  const notifications = await getNotificationsByUserId(user?.id!);
 
   return (
     <nav className="flex items-center justify-between border-b border-border bg-background p-5 text-primary">
@@ -44,7 +51,10 @@ export default async function TopNavbar() {
               <RemoveProjectButton />
               <Separator orientation="vertical" className="h-12" />
             </div>
-            <ProfileDropdown user={user} />
+            <div className="flex items-center gap-3">
+              <NotificationDropdown notifications={notifications} />
+              <ProfileDropdown user={user} />
+            </div>
           </>
         ) : (
           <Button>
